@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { loginUser } from "../services/api";
+import React, { useState, useContext } from "react";
+import { loginUser, getUserId } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../UserContext";
 
 const Login = () => {
   const [user, setUser] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { setUserId } = useContext(UserContext);
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -15,6 +17,8 @@ const Login = () => {
     e.preventDefault();
     try {
       await loginUser(user);
+      const id = await getUserId();
+      setUserId(id); // ✅ Update userId in context
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");

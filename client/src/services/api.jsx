@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 const API_URL = "http://localhost:5000/api/auth";
 
-axios.defaults.withCredentials = true; // Include cookies in requests
+axios.defaults.withCredentials = true; // ✅ Include cookies in requests
 
 // ✅ Register User
 export const registerUser = async (userData) => {
@@ -17,10 +17,25 @@ export const loginUser = async (userData) => {
   return response.data;
 };
 
-// ✅ Get User Profile
+// ✅ Get User Profile (Fixing Issue)
 export const getProfile = async () => {
-  const response = await axios.get(`${API_URL}/profile`);
-  return response.data;
+  try {
+    const response = await axios.get(`${API_URL}/profile`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    return null; // ✅ Return null if profile fetch fails
+  }
+};
+
+// ✅ Get Logged-in User ID
+export const getUserId = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/user`);
+    return response.data.userId;
+  } catch (error) {
+    return null;
+  }
 };
 
 // ✅ Logout User
